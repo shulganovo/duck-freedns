@@ -1,0 +1,13 @@
+# DuckDNS / FreeDNS personal configuration
+duck-freedns.conf
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+
+# System files
+.DS_Store
+Thumbs.db
