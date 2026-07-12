@@ -1,5 +1,7 @@
 #!/bin/sh
 
+VERSION="1.0.0"
+
 PATH=/opt/bin:/opt/sbin:/usr/bin:/usr/sbin:/bin:/sbin
 export PATH
 
