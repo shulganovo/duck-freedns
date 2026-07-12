@@ -2,6 +2,11 @@
 
 VERSION="1.0.0"
 
+if [ "$1" = "--version" ]; then
+    echo "duck_freedns.sh v$VERSION"
+    exit 0
+fi
+
 PATH=/opt/bin:/opt/sbin:/usr/bin:/usr/sbin:/bin:/sbin
 export PATH
 
