@@ -1,4 +1,8 @@
-# DuckDNS + FreeDNS updater для Entware
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/shulganovo/duck-freedns/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Issues](https://img.shields.io/github/issues/shulganovo/duck-freedns)](https://github.com/shulganovo/duck-freedns/issues)
+[![Stars](https://img.shields.io/github/stars/shulganovo/duck-freedns)](https://github.com/shulganovo/duck-freedns/stargazers)
+[![Shell](https://img.shields.io/badge/script-Shell-success.svg)](https://github.com/shulganovo/duck-freedns)
 
 Автоматическое обновление динамического DNS для роутеров Keenetic с установленным Entware.
 
