@@ -216,3 +216,9 @@ duck-freedns
 ## Лицензия
 
 MIT License
+
+## Проверено:
+
+✔ Keenetic Ultra KN-1811
+✔ KeeneticOS 5.x
+✔ Entware (aarch64)
