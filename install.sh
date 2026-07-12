@@ -1,80 +1,67 @@
 #!/bin/sh
 
-PATH=/opt/bin:/opt/sbin:/usr/bin:/bin:/sbin
+PATH=/opt/bin:/opt/sbin:/usr/bin:/usr/sbin:/bin:/sbin
 export PATH
 
-APP="duck-freedns"
+SCRIPT_URL="https://raw.githubusercontent.com/shulganovo/duck-freedns/main/duck_freedns.sh"
+
 SCRIPT="/opt/bin/duck_freedns.sh"
 CONFIG="/opt/etc/duck-freedns.conf"
-CRON="*/5 * * * * /opt/bin/duck_freedns.sh >> /opt/var/log/duck-freedns.log 2>&1"
+LOG="/opt/var/log/duck-freedns.log"
+CRONFILE="/opt/etc/crontab"
 
-echo "================================"
+echo "========================================="
 echo " DuckDNS + FreeDNS installer"
-echo " for Entware / Keenetic"
-echo "================================"
+echo "========================================="
 echo
-
 
 # Проверка Entware
 
 if [ ! -x /opt/bin/opkg ]; then
-    echo "ERROR: Entware not found"
+    echo "ERROR: Entware is not installed."
     exit 1
 fi
 
-
-echo "[1/5] Updating package list..."
-
+echo "[1/6] Updating package list..."
 opkg update
 
-
-echo "[2/5] Installing dependencies..."
-
+echo
+echo "[2/6] Installing required packages..."
 opkg install curl bind-dig
 
-
-# Установка скрипта
-
-echo "[3/5] Installing script..."
+echo
+echo "[3/6] Downloading script..."
 
 mkdir -p /opt/bin
 mkdir -p /opt/etc
 mkdir -p /opt/var/log
 mkdir -p /opt/var/run
 
-
-echo
-echo "Copying duck_freedns.sh..."
-
-cat > "$SCRIPT" <<'EOF'
-PLACEHOLDER
-EOF
+if ! curl -fsSL "$SCRIPT_URL" -o "$SCRIPT"; then
+    echo "ERROR: Cannot download duck_freedns.sh"
+    exit 1
+fi
 
 chmod +x "$SCRIPT"
 
-
-# Настройка
+echo
+echo "[4/6] Creating configuration..."
 
 if [ ! -f "$CONFIG" ]; then
 
-echo
-echo "Creating configuration..."
+    printf "DuckDNS domain: "
+    read DUCK_DOMAIN
 
-echo
-printf "DuckDNS domain: "
-read DUCK_DOMAIN
+    printf "DuckDNS token: "
+    read DUCK_TOKEN
 
-printf "DuckDNS token: "
-read DUCK_TOKEN
+    printf "FreeDNS domain: "
+    read FREE_DOMAIN
 
-printf "FreeDNS domain: "
-read FREE_DOMAIN
+    printf "FreeDNS update URL: "
+    read FREE_URL
 
-printf "FreeDNS update URL: "
-read FREE_URL
-
-
-cat > "$CONFIG" <<EOF
+    cat > "$CONFIG" <<EOF
 DUCK_DOMAIN="$DUCK_DOMAIN"
 DUCK_TOKEN="$DUCK_TOKEN"
 
@@ -82,35 +69,31 @@ FREE_DOMAIN="$FREE_DOMAIN"
 FREE_URL="$FREE_URL"
 EOF
 
+    chmod 600 "$CONFIG"
 
-chmod 600 "$CONFIG"
-
+else
+    echo "Configuration already exists."
 fi
 
+echo
+echo "[5/6] Installing cron task..."
 
-# Cron
-
-echo "[4/5] Configuring cron..."
-
-CRONFILE="/opt/etc/crontab"
+CRON='*/5 * * * * /opt/bin/duck_freedns.sh >> /opt/var/log/duck-freedns.log 2>&1'
 
 touch "$CRONFILE"
 
-grep -qxF "$CRON" "$CRONFILE" || echo "$CRON" >> "$CRONFILE"
+grep -F "$CRON" "$CRONFILE" >/dev/null 2>&1 || echo "$CRON" >> "$CRONFILE"
 
-
-# Запуск
-
-echo "[5/5] Test update..."
+echo
+echo "[6/6] Test run..."
 
 "$SCRIPT"
 
-
 echo
-echo "================================"
-echo " Installation complete"
-echo " Config:"
-echo " $CONFIG"
-echo " Script:"
-echo " $SCRIPT"
-echo "================================"
+echo "========================================="
+echo "Installation completed successfully."
+echo
+echo "Script : $SCRIPT"
+echo "Config : $CONFIG"
+echo "Log    : $LOG"
+echo "========================================="
