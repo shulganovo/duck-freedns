@@ -80,9 +80,12 @@ echo "[5/6] Installing cron task..."
 
 CRON='*/5 * * * * /opt/bin/duck_freedns.sh >> /opt/var/log/duck-freedns.log 2>&1'
 
-touch "$CRONFILE"
+(
+    crontab -l 2>/dev/null | grep -Fv "/opt/bin/duck_freedns.sh"
+    echo "$CRON"
+) | crontab -
 
-grep -F "$CRON" "$CRONFILE" >/dev/null 2>&1 || echo "$CRON" >> "$CRONFILE"
+echo "Cron task installed."
 
 echo
 echo "[6/6] Test run..."
