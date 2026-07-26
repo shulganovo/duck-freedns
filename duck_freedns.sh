@@ -34,7 +34,28 @@ if [ -z "$DUCK_DOMAIN" ] || [ -z "$DUCK_TOKEN" ] || \
 fi
 
 # Получение внешнего IP
-CURRENT_IP=$(curl -4 -fsS https://api.ipify.org)
+get_ip() {
+
+    for URL in \
+        "https://api.ipify.org" \
+        "https://ipv4.icanhazip.com" \
+        "https://ifconfig.me/ip" \
+        "https://checkip.amazonaws.com" \
+        "https://ipinfo.io/ip"
+    do
+        IP=$(curl -4 -fsS --connect-timeout 5 --max-time 10 "$URL" 2>/dev/null | tr -d '\r\n')
+
+        if echo "$IP" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'; then
+            log "IP detected via: $URL"
+            echo "$IP"
+            return 0
+        fi
+    done
+
+    return 1
+}
+
+CURRENT_IP=$(get_ip)
 
 if [ -z "$CURRENT_IP" ]; then
     log "ERROR: Unable to determine external IP."
