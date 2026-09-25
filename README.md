@@ -38,7 +38,7 @@
 
 ```sh
 opkg update
-opkg install curl bind-dig
+opkg install curl bind-dig cron
 ```
 
 Проверка установленных утилит:
@@ -46,6 +46,7 @@ opkg install curl bind-dig
 ```sh
 which curl
 which dig
+which cron
 ```
 
 Ожидаемый результат:
