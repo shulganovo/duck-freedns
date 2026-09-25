@@ -54,6 +54,7 @@ which cron
 ```text
 /opt/bin/curl
 /opt/bin/dig
+/opt/sbin/cron
 ```
 
 ---
