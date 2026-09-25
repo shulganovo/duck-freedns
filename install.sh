@@ -8,14 +8,11 @@ SCRIPT_URL="https://raw.githubusercontent.com/shulganovo/duck-freedns/main/duck_
 SCRIPT="/opt/bin/duck_freedns.sh"
 CONFIG="/opt/etc/duck-freedns.conf"
 LOG="/opt/var/log/duck-freedns.log"
-CRONFILE="/opt/etc/crontab"
 
 echo "========================================="
 echo " DuckDNS + FreeDNS installer"
 echo "========================================="
 echo
-
-# Проверка Entware
 
 if [ ! -x /opt/bin/opkg ]; then
     echo "ERROR: Entware is not installed."
@@ -27,7 +24,7 @@ opkg update
 
 echo
 echo "[2/6] Installing required packages..."
-opkg install curl bind-dig
+opkg install curl bind-dig cron
 
 echo
 echo "[3/6] Downloading script..."
@@ -48,7 +45,6 @@ echo
 echo "[4/6] Creating configuration..."
 
 if [ ! -f "$CONFIG" ]; then
-
     printf "DuckDNS domain: "
     read DUCK_DOMAIN
 
@@ -70,7 +66,6 @@ FREE_URL="$FREE_URL"
 EOF
 
     chmod 600 "$CONFIG"
-
 else
     echo "Configuration already exists."
 fi
@@ -99,4 +94,5 @@ echo
 echo "Script : $SCRIPT"
 echo "Config : $CONFIG"
 echo "Log    : $LOG"
+echo "Cron   : every 5 minutes"
 echo "========================================="
